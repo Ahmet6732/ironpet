@@ -1,4 +1,9 @@
-import speech_recognition as sr
+try:
+    import speech_recognition as sr
+    SPEECH_RECOGNITION_AVAILABLE = True
+except ImportError:
+    SPEECH_RECOGNITION_AVAILABLE = False
+    
 import threading
 import queue
 import logging
@@ -8,20 +13,31 @@ logger = logging.getLogger(__name__)
 
 class VoiceService:
     def __init__(self):
-        self.recognizer = sr.Recognizer()
-        self.microphone = sr.Microphone()
-        self.is_listening = False
-        self.wake_word = "jarvis"
-        self.command_queue = queue.Queue()
-        self.listening_thread = None
-        
-        # Adjust for ambient noise
+        if not SPEECH_RECOGNITION_AVAILABLE:
+            logger.warning("Speech recognition not available - PyAudio not installed")
+            self.recognizer = None
+            self.microphone = None
+            self.is_available = False
+            return
+            
         try:
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
+            self.is_listening = False
+            self.wake_word = "jarvis"
+            self.command_queue = queue.Queue()
+            self.listening_thread = None
+            self.is_available = True
+            
+            # Adjust for ambient noise
             with self.microphone as source:
                 self.recognizer.adjust_for_ambient_noise(source, duration=1)
                 logger.info("Voice service initialized and calibrated for ambient noise")
         except Exception as e:
             logger.error(f"Failed to initialize microphone: {str(e)}")
+            self.is_available = False
+            self.recognizer = None
+            self.microphone = None
     
     def start_listening(self, callback: Callable[[str], None]):
         """
