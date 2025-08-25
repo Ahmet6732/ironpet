@@ -134,47 +134,35 @@ const Avatar = () => {
 
   const handleVoiceCommand = async (command) => {
     setIsThinking(true);
-    const lowerCommand = command.toLowerCase();
     
-    // Animation commands
-    const animationCommands = {
-      'idle': 'idle',
-      'walk': 'walk',
-      'run': 'run',
-      'jump': 'jump',
-      'fire': 'fire',
-      'attack': 'fire',
-      'punch': 'punch',
-      'fly': 'fly',
-      'stop': 'idle'
-    };
-
-    // Check for animation commands
-    for (const [keyword, animation] of Object.entries(animationCommands)) {
-      if (lowerCommand.includes(keyword)) {
-        executeAnimation(animation);
-        setIsThinking(false);
-        return;
-      }
-    }
-
-    // Send to AI for general questions
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/jarvis/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: command })
+        body: JSON.stringify({ 
+          message: command,
+          session_id: 'main_session'
+        })
       });
       
       const data = await response.json();
-      setCurrentResponse(data.response);
-      setShowSpeechBubble(true);
       
-      // Hide speech bubble after 5 seconds
-      setTimeout(() => {
-        setShowSpeechBubble(false);
-        setCurrentResponse('');
-      }, 5000);
+      // Handle animation commands
+      if (data.action === 'animation' && data.animation) {
+        executeAnimation(data.animation);
+      }
+      
+      // Show AI response
+      if (data.response) {
+        setCurrentResponse(data.response);
+        setShowSpeechBubble(true);
+        
+        // Hide speech bubble after 5 seconds
+        setTimeout(() => {
+          setShowSpeechBubble(false);
+          setCurrentResponse('');
+        }, 5000);
+      }
       
     } catch (error) {
       console.error('Error communicating with Jarvis:', error);
