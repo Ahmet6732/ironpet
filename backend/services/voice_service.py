@@ -43,6 +43,10 @@ class VoiceService:
         """
         Start continuous listening for voice commands
         """
+        if not self.is_available:
+            logger.warning("Voice service not available")
+            return
+            
         if self.is_listening:
             return
             
