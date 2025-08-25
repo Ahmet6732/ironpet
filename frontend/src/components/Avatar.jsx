@@ -176,7 +176,19 @@ const Avatar = () => {
     setIsThinking(false);
   };
 
-  const startListening = () => {
+  const sendChatMessage = async () => {
+    if (!chatMessage.trim()) return;
+    
+    const message = chatMessage;
+    setChatMessage('');
+    await handleVoiceCommand(message);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      sendChatMessage();
+    }
+  };
     setIsListening(true);
     
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
