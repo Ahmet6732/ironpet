@@ -26,6 +26,8 @@ const Avatar = () => {
   const [isThinking, setIsThinking] = useState(false);
   const [showSpeechBubble, setShowSpeechBubble] = useState(false);
   const [currentResponse, setCurrentResponse] = useState('');
+  const [showChatInput, setShowChatInput] = useState(false);
+  const [chatMessage, setChatMessage] = useState('');
 
   const animationTimerRef = useRef(null);
   const movementTimerRef = useRef(null);
