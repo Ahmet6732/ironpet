@@ -2,8 +2,12 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 import logging
-from ..services.deepseek_service import DeepSeekService
-from ..services.voice_service import VoiceService
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from services.deepseek_service import DeepSeekService
+from services.voice_service import VoiceService
 
 logger = logging.getLogger(__name__)
 
