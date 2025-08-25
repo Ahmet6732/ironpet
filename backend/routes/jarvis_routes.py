@@ -15,7 +15,11 @@ jarvis_router = APIRouter(prefix="/jarvis", tags=["jarvis"])
 
 # Initialize services
 deepseek_service = DeepSeekService()
-voice_service = VoiceService()
+try:
+    voice_service = VoiceService()
+except Exception as e:
+    logger.warning(f"Voice service initialization failed: {e}")
+    voice_service = None
 
 # Conversation storage (in production, use Redis or database)
 conversation_sessions = {}
