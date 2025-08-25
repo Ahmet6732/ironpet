@@ -71,10 +71,39 @@ class DeepSeekService:
             return "I apologize for the delay. My response time is a bit slow right now."
         except requests.exceptions.RequestException as e:
             logger.error(f"DeepSeek API request error: {str(e)}")
-            return "I'm experiencing some connectivity issues. Please try again in a moment."
+            # Fallback responses for common queries
+            return self._get_fallback_response(message)
         except Exception as e:
             logger.error(f"Unexpected error in DeepSeek service: {str(e)}")
             return "I encountered an unexpected error. Please try rephrasing your question."
+    
+    def _get_fallback_response(self, message: str) -> str:
+        """
+        Provide fallback responses when DeepSeek API is unavailable
+        """
+        message_lower = message.lower()
+        
+        # Common greetings and questions
+        if any(word in message_lower for word in ['hello', 'hi', 'hey', 'greetings']):
+            return "Hello! I'm Jarvis, your AI assistant. I can control the ironpet avatar and answer your questions. Try asking me to 'walk', 'fly', or 'fire'!"
+        
+        if any(word in message_lower for word in ['how are you', 'how do you feel']):
+            return "I'm functioning optimally, thank you for asking! My systems are online and ready to assist you."
+        
+        if any(word in message_lower for word in ['what can you do', 'help', 'capabilities']):
+            return "I can control the ironpet avatar with commands like walk, run, fly, jump, fire, and punch. I can also answer questions and have conversations. What would you like me to do?"
+        
+        if any(word in message_lower for word in ['weather', 'time', 'date']):
+            return "I currently don't have access to real-time data like weather or time. But I can control your avatar and chat with you!"
+        
+        # Animation responses
+        animations = ['walk', 'run', 'fly', 'jump', 'fire', 'punch', 'idle']
+        for anim in animations:
+            if anim in message_lower:
+                return f"Executing {anim} animation for the ironpet avatar!"
+        
+        # Default response
+        return "I'm currently running in offline mode. I can still control the ironpet avatar and provide basic responses. Try commands like 'walk', 'fly', or ask me simple questions!"
     
     def extract_animation_command(self, message: str) -> Optional[str]:
         """
