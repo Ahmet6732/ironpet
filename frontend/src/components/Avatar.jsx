@@ -257,6 +257,16 @@ const Avatar = () => {
               {isListening ? 'Stop' : 'Listen'}
             </Button>
             
+            <Button
+              onClick={() => setShowChatInput(!showChatInput)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Chat
+            </Button>
+            
             {isThinking && (
               <div className="flex items-center gap-2 text-purple-400">
                 <div className="animate-spin w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full"></div>
@@ -265,8 +275,24 @@ const Avatar = () => {
             )}
           </div>
           
+          {showChatInput && (
+            <div className="flex gap-2 mt-2">
+              <input
+                type="text"
+                value={chatMessage}
+                onChange={(e) => setChatMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Type a message to Jarvis..."
+                className="flex-1 px-3 py-2 text-sm bg-gray-800 border border-gray-600 rounded focus:outline-none focus:border-purple-500"
+              />
+              <Button onClick={sendChatMessage} size="sm">
+                Send
+              </Button>
+            </div>
+          )}
+          
           <div className="text-xs text-gray-400">
-            Say "Jarvis" + command
+            {showChatInput ? 'Type or say "Jarvis" + command' : 'Say "Jarvis" + command'}
           </div>
         </div>
       </Card>
