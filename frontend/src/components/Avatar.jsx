@@ -189,6 +189,8 @@ const Avatar = () => {
       sendChatMessage();
     }
   };
+
+  const startListening = () => {
     setIsListening(true);
     
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
